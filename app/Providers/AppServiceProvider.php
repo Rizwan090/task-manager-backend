@@ -3,6 +3,10 @@
 namespace App\Providers;
 
 use Illuminate\Support\ServiceProvider;
+use Modules\Admin\Contracts\Repositories\ProjectRepositoryContract;
+use Modules\Admin\Contracts\Services\ProjectContract;
+use Modules\Admin\Repositories\ProjectRepository;
+use Modules\Admin\Services\ProjectService;
 use Modules\Core\Contracts\Repositories\PermissionRepositoryContract;
 use Modules\Core\Repositories\PermissionRepository;
 use Modules\User\Contracts\Repositories\UserRepositoryContract;
@@ -19,16 +23,16 @@ class AppServiceProvider extends ServiceProvider
      */
     public function register(): void
     {
-        // Bind the UserRepositoryContract to UserRepository
         $this->app->bind(UserRepositoryContract::class, UserRepository::class);
-
-        // Bind the UserContract to UserService
         $this->app->bind(UserContract::class, UserService::class);
-
         // Bind the AccessTokenContract to AccessTokenService
         $this->app->bind(AccessTokenContract::class, AccessTokenService::class);
-        $this->app->bind(PermissionRepositoryContract::class, PermissionRepository::class
-        );
+        $this->app->bind(PermissionRepositoryContract::class, PermissionRepository::class);
+        $this->app->bind(ProjectContract::class, ProjectService::class);
+        $this->app->bind(ProjectRepositoryContract::class, ProjectRepository::class);
+        $this->app->bind(ProjectContract::class, ProjectService::class);
+
+
 
     }
 

@@ -4,6 +4,12 @@ namespace Modules\Core\Providers;
 
 use Illuminate\Support\Facades\Blade;
 use Illuminate\Support\ServiceProvider;
+use Modules\Core\Contracts\Repositories\RoleRepositoryContract;
+use Modules\Core\Contracts\Services\PermissionContract;
+use Modules\Core\Contracts\Services\RoleContract;
+use Modules\Core\Repositories\RoleRepository;
+use Modules\Core\Services\PermissionService;
+use Modules\Core\Services\RoleService;
 
 class CoreServiceProvider extends ServiceProvider
 {
@@ -31,6 +37,12 @@ class CoreServiceProvider extends ServiceProvider
     {
         $this->app->register(EventServiceProvider::class);
         $this->app->register(RouteServiceProvider::class);
+        $this->app->bind(PermissionContract::class, PermissionService::class);
+        $this->app->bind(RoleContract::class, RoleService::class);
+        $this->app->bind(RoleRepositoryContract::class, RoleRepository::class);
+
+
+
     }
 
     /**

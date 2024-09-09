@@ -19,25 +19,13 @@ use Modules\User\Http\Controllers\UserController;
 
 
 
-Route::post('signin', [AuthenticationController::class, 'signIn']);
-Route::post("register", [AuthenticationController::class, "signUp"]);
+Route::post('v1/login', [AuthenticationController::class, 'signIn']);
+Route::post('v1/register', [AuthenticationController::class, 'signUp']);
+Route::post('v1/logout', [AuthenticationController::class, 'logout'])->middleware('auth:sanctum');
 
 
 
-Route::get("permissions", [PermissionController::class, "getPermissions"]);
-Route::prefix("permission/")->group(function () {
-    Route::post("create", [PermissionController::class, "store"]);
-    Route::get("{id}", [PermissionController::class, "getById"]);
-    Route::delete("{id}", [PermissionController::class, "destroy"]);
-    Route::patch("{id}", [PermissionController::class, "update"]);
-});
-
-//    Roles Api
-Route::get("roles", [RoleController::class, "getRoles"]);
-Route::prefix("role/")->group(function () {
-    Route::post("create", [RoleController::class, "store"]);
-    Route::get("{id}", [RoleController::class, "getById"]);
-    Route::delete("{id}", [RoleController::class, "destroy"]);
-    Route::patch("{id}", [RoleController::class, "update"]);
-    Route::patch("assign-permission/{uuid}", [RoleController::class, "assignPermission"]);
+Route::middleware('auth:sanctum')->group(function () {
+    Route::get('v1/profile', [UserController::class, 'getAuthUser']);
+    Route::patch('v1/profile', [UserController::class, 'updateAuthUser']);
 });

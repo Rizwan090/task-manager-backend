@@ -2,65 +2,55 @@
 
 namespace Modules\User\Http\Controllers;
 
-use App\Http\Controllers\Controller;
-use Illuminate\Http\RedirectResponse;
-use Illuminate\Http\Request;
+use Illuminate\Contracts\Container\BindingResolutionException;
+use Illuminate\Http\JsonResponse;
+use Illuminate\Routing\Controller;
+use Illuminate\Support\Facades\Auth;
+use Modules\User\Contracts\Services\UserContract;
+use Modules\User\Entities\User;
+use Modules\User\Http\Requests\UserUpdateRequest;
+use Modules\User\Transformers\UserTransformer;
+use Psr\Container\ContainerExceptionInterface;
+use Psr\Container\NotFoundExceptionInterface;
 
 class UserController extends Controller
 {
+    public function __construct(
+        private readonly UserContract $objUserService
+    )
+    {
+    }
+
     /**
      * Display a listing of the resource.
+     * @return JsonResponse
+     * @throws BindingResolutionException
+     * @throws ContainerExceptionInterface
+     * @throws NotFoundExceptionInterface
      */
-    public function index()
+    public function getAuthUser(): JsonResponse
     {
-        return view('user::index');
+        /** @var User $objUser */
+        $objUser = Auth::user();
+        return apiResponse()->success(new UserTransformer($objUser));
     }
 
     /**
-     * Show the form for creating a new resource.
+     * @param UserUpdateRequest $objRequest
+     * @return JsonResponse
+     * @throws BindingResolutionException
+     * @throws ContainerExceptionInterface
+     * @throws NotFoundExceptionInterface
      */
-    public function create()
+    public function updateAuthUser(UserUpdateRequest $objRequest): JsonResponse
     {
-        return view('user::create');
+        /** @var User $objUser */
+        $objUser = Auth::user();
+
+        $objUser = $this->objUserService->edit($objUser, $objRequest->getDTO());
+
+        return apiResponse()->success(new UserTransformer($objUser));
     }
 
-    /**
-     * Store a newly created resource in storage.
-     */
-    public function store(Request $request): RedirectResponse
-    {
-        //
-    }
 
-    /**
-     * Show the specified resource.
-     */
-    public function show($id)
-    {
-        return view('user::show');
-    }
-
-    /**
-     * Show the form for editing the specified resource.
-     */
-    public function edit($id)
-    {
-        return view('user::edit');
-    }
-
-    /**
-     * Update the specified resource in storage.
-     */
-    public function update(Request $request, $id): RedirectResponse
-    {
-        //
-    }
-
-    /**
-     * Remove the specified resource from storage.
-     */
-    public function destroy($id)
-    {
-        //
-    }
 }

@@ -3,13 +3,14 @@
 namespace Modules\User\Entities;
 
 use Illuminate\Database\Eloquent\Model;
+use Illuminate\Database\Eloquent\Relations\BelongsToMany;
 use Laravel\Sanctum\HasApiTokens;
-use Illuminate\Database\Eloquent\Factories\HasFactory;
+use Modules\Admin\Entities\Project;
 use Modules\Core\Entities\Role;
 
 class User extends Model
 {
-    use HasApiTokens, HasFactory;
+    use HasApiTokens;
 
     protected $guarded = [];
 
@@ -17,5 +18,10 @@ class User extends Model
     public function role()
     {
         return $this->belongsTo(Role::class, 'role_id');
+    }
+
+    public function projects(): BelongsToMany
+    {
+        return $this->belongsToMany(Project::class);
     }
 }
