@@ -5,6 +5,7 @@ use Modules\Admin\Http\Controllers\ProjectController;
 use Modules\Core\Http\Controllers\PermissionController;
 use Modules\Core\Http\Controllers\RoleController;
 use Modules\Admin\Http\Controllers\UserController;
+use Modules\User\Http\Controllers\TaskController;
 
 /*
  *--------------------------------------------------------------------------
@@ -16,6 +17,7 @@ use Modules\Admin\Http\Controllers\UserController;
  * is assigned the "api" middleware group. Enjoy building your API!
  *
 */
+
 
 Route::middleware(['auth:sanctum', \App\Http\Middleware\AdminMiddleware::class])->prefix('admin')->group(function () {
     Route::get('users', [UserController::class, 'getAll']);
@@ -33,25 +35,35 @@ Route::middleware(['auth:sanctum', \App\Http\Middleware\AdminMiddleware::class])
         Route::post('{projectId}/assign-users', [ProjectController::class, 'assignUsers']);
     });
 
+    //    Taks route
 
+    Route::get('projects/{projectId}/tasks', [TaskController::class, 'getAll']);
+    Route::post('projects/tasks', [TaskController::class, 'store']);
+    Route::get('tasks/{id}', [TaskController::class, 'getById']);
+    Route::patch('tasks/{id}', [TaskController::class, 'update']);
+    Route::delete('tasks/{id}', [TaskController::class, 'destroy']);
+    Route::post('tasks/{taskId}/assign/{userId}', [TaskController::class, 'assignUserToTask']);
 
-
-});
-
-Route::get("permissions", [PermissionController::class, "getPermissions"]);
-Route::prefix("permission/")->group(function () {
-    Route::post("create", [PermissionController::class, "store"]);
-    Route::get("{id}", [PermissionController::class, "getById"]);
-    Route::delete("{id}", [PermissionController::class, "destroy"]);
-    Route::patch("{id}", [PermissionController::class, "update"]);
-});
+    Route::get("permissions", [PermissionController::class, "getPermissions"]);
+    Route::prefix("permission/")->group(function () {
+        Route::post("create", [PermissionController::class, "store"]);
+        Route::get("{id}", [PermissionController::class, "getById"]);
+        Route::delete("{id}", [PermissionController::class, "destroy"]);
+        Route::patch("{id}", [PermissionController::class, "update"]);
+    });
 
 // Roles Api
-Route::get("roles", [RoleController::class, "getRoles"]);
-Route::prefix("role/")->group(function () {
-    Route::post("create", [RoleController::class, "store"]);
-    Route::get("{id}", [RoleController::class, "getById"]);
-    Route::delete("{id}", [RoleController::class, "destroy"]);
-    Route::patch("{id}", [RoleController::class, "update"]);
-    Route::patch("assign-permission/{uuid}", [RoleController::class, "assignPermission"]);
+    Route::get("roles", [RoleController::class, "getRoles"]);
+    Route::prefix("role/")->group(function () {
+        Route::post("create", [RoleController::class, "store"]);
+        Route::get("{id}", [RoleController::class, "getById"]);
+        Route::delete("{id}", [RoleController::class, "destroy"]);
+        Route::patch("{id}", [RoleController::class, "update"]);
+        Route::patch("assign-permission/{uuid}", [RoleController::class, "assignPermission"]);
+    });
+
+
+
 });
+
+

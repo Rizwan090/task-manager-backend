@@ -5,6 +5,7 @@ namespace Modules\Admin\Http\Controllers;
 use Illuminate\Contracts\Support\Renderable;
 use Illuminate\Http\JsonResponse;
 use Illuminate\Routing\Controller;
+use Illuminate\Support\Facades\Auth;
 use Modules\Admin\Contracts\Services\ProjectContract;
 use Modules\Admin\Http\Requests\ProjectRequest;
 use Modules\Admin\Transformers\ProjectTransformer;
@@ -51,15 +52,16 @@ final class ProjectController extends Controller
      * @throws ContainerExceptionInterface
      * @throws NotFoundExceptionInterface
      * @throws BindingResolutionException
+     * @throws \Exception
      */
     public function getById(int $id): JsonResponse
     {
-        $project = $this->projectService->findById($id);
+        $user = Auth::user();
+        $project = $user->projects()->find($id);
 
         if (is_null($project)) {
-            throw new \Exception("Project Not Found.", 404);
+            throw new \Exception("Project Not Found or not assigned to the user.", 404);
         }
-
         return apiResponse()->success(new ProjectTransformer($project));
     }
 
@@ -80,7 +82,6 @@ final class ProjectController extends Controller
 
         $projectDTO = $request->getDTO();
         $updatedProject = $this->projectService->update($project, $projectDTO);
-
         return apiResponse()->success(new ProjectTransformer($updatedProject));
     }
 
@@ -100,7 +101,6 @@ final class ProjectController extends Controller
         }
 
         $this->projectService->delete($project);
-
         return apiResponse()->success("Project has been deleted.");
     }
 
@@ -123,5 +123,16 @@ final class ProjectController extends Controller
         }
 
         return apiResponse()->error('Failed to assign users to project.');
+    }
+
+    /**
+     * @throws ContainerExceptionInterface
+     * @throws BindingResolutionException
+     * @throws NotFoundExceptionInterface
+     */
+    public function getUserProjects(): JsonResponse
+    {
+        $user = Auth::user();$projects = $user->projects;
+        return apiResponse()->success(ProjectTransformer::collection($projects));
     }
 }
