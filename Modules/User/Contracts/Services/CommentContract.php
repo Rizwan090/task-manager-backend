@@ -2,6 +2,7 @@
 
 namespace Modules\User\Contracts\Services;
 
+use Illuminate\Support\Collection;
 use Modules\User\DataTransfer\Requests\CommentDTO;
 use Modules\User\Entities\Comment;
 
@@ -11,9 +12,9 @@ interface CommentContract
      * Get all comments for a specific task.
      *
      * @param int $taskId
-     * @return array
+     * @return Collection
      */
-    public function getAllByTaskId(int $taskId): array;
+    public function getAllByTaskId(int $taskId): Collection;
 
     /**
      * Create a new comment. The `parent_id` is optional for replies.

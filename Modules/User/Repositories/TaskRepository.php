@@ -5,6 +5,7 @@ namespace Modules\User\Repositories;
 use Modules\User\Contracts\Repositories\TaskRepositoryContract;
 use Illuminate\Support\Collection;
 use Modules\User\Entities\Task;
+use Modules\User\Enum\Status;
 
 class TaskRepository implements TaskRepositoryContract
 {
@@ -40,7 +41,6 @@ class TaskRepository implements TaskRepositoryContract
         return $task->delete();
     }
 
-
     /**
      * Update an existing task.
      */
@@ -67,12 +67,19 @@ class TaskRepository implements TaskRepositoryContract
         return $task->save();
     }
 
-
     /**
      * Get all tasks by project ID.
      */
     public function getAllByProjectId(int $projectId): Collection
     {
         return Task::where('project_id', $projectId)->get();
+    }
+
+    /**
+     * Filter tasks by status.
+     */
+    public function getByStatus(Status $status): Collection
+    {
+        return Task::where('status', $status->value)->get();
     }
 }

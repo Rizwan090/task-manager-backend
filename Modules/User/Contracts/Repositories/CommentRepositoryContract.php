@@ -12,7 +12,7 @@ interface CommentRepositoryContract
      * Get all comments for a specific task.
      *
      * @param int $taskId
-     * @return array
+     * @return Collection
      */
     public function getAllByTaskId(int $taskId): Collection;
 

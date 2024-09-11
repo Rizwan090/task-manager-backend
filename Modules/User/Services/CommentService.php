@@ -2,7 +2,7 @@
 
 namespace Modules\User\Services;
 
-use Illuminate\Support\Collection; // Import Collection
+use Illuminate\Support\Collection;
 use Modules\User\Contracts\Repositories\CommentRepositoryContract;
 use Modules\User\Contracts\Services\CommentContract;
 use Modules\User\DataTransfer\Requests\CommentDTO;

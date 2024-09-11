@@ -38,18 +38,18 @@ Route::middleware(['auth:sanctum'])->group(function () {
 
 
 //    Taks route
-    Route::get('projects/{projectId}/tasks', [TaskController::class, 'getAll']);
-    Route::get('tasks/{id}', [TaskController::class, 'getById']);
-    Route::patch('tasks/{id}', [TaskController::class, 'update']);
+    Route::get('v1/project/{project}/task', [TaskController::class, 'getAll']);
+    Route::get('v1/project/{project}/task/{task}', [TaskController::class, 'getById']);
+    Route::patch('v1/project/{project}/task/{task}', [TaskController::class, 'update']);
 
 //    comment rote
 
     Route::prefix('comments')->group(function () {
-        Route::post('v1/comments', [CommentController::class, 'create']);
-        Route::get('v1/comments/task/{taskId}', [CommentController::class, 'getAllByTaskId']);
-        Route::get('v1/comments/{id}', [CommentController::class, 'findById']);
-        Route::patch('v1/comments/{id}', [CommentController::class, 'update']);
-        Route::delete('v1/comments/{id}', [CommentController::class, 'delete']);
+        Route::post('v1/project/{project}/task/{task}/comment', [CommentController::class, 'create']);
+        Route::get('v1/project/{project}/task/{task}/comment', [CommentController::class, 'getAllByTaskId']);
+        Route::get('v1/project/{project}/task/{task}/comment/{comment}', [CommentController::class, 'findById']);
+        Route::patch('v1/project/{project}/task/{task}/comment/{comment}', [CommentController::class, 'update']);
+        Route::delete('v1/project/{project}/task/{task}/comment/{comment}', [CommentController::class, 'delete']);
     });
 });
 

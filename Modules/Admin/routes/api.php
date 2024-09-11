@@ -20,29 +20,29 @@ use Modules\User\Http\Controllers\TaskController;
 
 
 Route::middleware(['auth:sanctum', \App\Http\Middleware\AdminMiddleware::class])->prefix('admin')->group(function () {
-    Route::get('users', [UserController::class, 'getAll']);
-    Route::post('create', [UserController::class, 'store']);
-    Route::patch('users/{id}', [UserController::class, 'update']);
-    Route::delete('users/{id}', [UserController::class, 'destroy']);
+    Route::get('v1/admin/user', [UserController::class, 'getAll']);
+    Route::post('v1/admin/user', [UserController::class, 'store']);
+    Route::patch('v1/admin/user/{id}', [UserController::class, 'update']);
+    Route::delete('v1/admin/user/{id}', [UserController::class, 'destroy']);
 
 
     Route::prefix('projects')->group(function () {
-        Route::get('v1/projects', [ProjectController::class, 'getAll']);
-        Route::post('v1/project', [ProjectController::class, 'store']);
-        Route::get('v1/projects/{id}', [ProjectController::class, 'getById']);
-        Route::patch('v1/project/{id}', [ProjectController::class, 'update']);
-        Route::delete('v1/project/{id}', [ProjectController::class, 'destroy']);
-        Route::post('{projectId}/assign-users', [ProjectController::class, 'assignUsers']);
+        Route::get('v1/admin/project', [ProjectController::class, 'getAll']);
+        Route::post('v1/admin/project', [ProjectController::class, 'store']);
+        Route::get('v1/admin/project/{id}', [ProjectController::class, 'getById']);
+        Route::patch('v1/admin/project/{id}', [ProjectController::class, 'update']);
+        Route::delete('v1/admin/project/{id}', [ProjectController::class, 'destroy']);
+        Route::post('v1/admin/project/{id}/assign', [ProjectController::class, 'assignUsers']);
     });
 
     //    Taks route
 
-    Route::get('projects/{projectId}/tasks', [TaskController::class, 'getAll']);
-    Route::post('projects/tasks', [TaskController::class, 'store']);
-    Route::get('tasks/{id}', [TaskController::class, 'getById']);
-    Route::patch('tasks/{id}', [TaskController::class, 'update']);
-    Route::delete('tasks/{id}', [TaskController::class, 'destroy']);
-    Route::post('tasks/{taskId}/assign/{userId}', [TaskController::class, 'assignUserToTask']);
+    Route::get('v1/project/{project}/task', [TaskController::class, 'getAll']);
+    Route::post('v1/project/{project}/task', [TaskController::class, 'store']);
+    Route::get('v1/project/{project}/task/{task}', [TaskController::class, 'getById']);
+    Route::patch('/v1/project/{project}/task/{task}', [TaskController::class, 'update']);
+    Route::delete('v1/project/{project}/task/{task}', [TaskController::class, 'destroy']);
+    Route::post('v1/project/{project}/task/{task}/assign', [TaskController::class, 'assignUserToTask']);
 
     Route::get("permissions", [PermissionController::class, "getPermissions"]);
     Route::prefix("permission/")->group(function () {

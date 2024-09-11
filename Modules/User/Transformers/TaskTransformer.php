@@ -22,7 +22,7 @@ class TaskTransformer extends JsonResource
             'parent_id' => $this->parent_id,
             'title' => $this->title,
             'description' => $this->description,
-            'is_active' => $this->is_active,
+            'status' => $this->status,
             'assignee' => new UserTransformer($this->whenLoaded('assignee')),
             'project' => new ProjectTransformer($this->whenLoaded('project')),
             'subtasks' => TaskTransformer::collection($this->whenLoaded('subtasks')),

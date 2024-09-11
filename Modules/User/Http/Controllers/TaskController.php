@@ -5,12 +5,12 @@ namespace Modules\User\Http\Controllers;
 use Illuminate\Http\JsonResponse;
 use Illuminate\Routing\Controller;
 use Illuminate\Support\Facades\Auth;
+use Illuminate\Contracts\Container\BindingResolutionException;
 use Modules\User\Http\Requests\TaskRequest;
 use Modules\User\Transformers\TaskTransformer;
 use Modules\User\Contracts\Services\TaskContract;
 use Psr\Container\NotFoundExceptionInterface;
 use Psr\Container\ContainerExceptionInterface;
-use Illuminate\Contracts\Container\BindingResolutionException;
 
 final class TaskController extends Controller
 {
@@ -21,6 +21,8 @@ final class TaskController extends Controller
     /**
      * Get all tasks within a project.
      *
+     * @param int $projectId
+     * @return JsonResponse
      * @throws ContainerExceptionInterface
      * @throws BindingResolutionException
      * @throws NotFoundExceptionInterface
@@ -34,6 +36,8 @@ final class TaskController extends Controller
     /**
      * Store a new task within a project.
      *
+     * @param TaskRequest $request
+     * @return JsonResponse
      * @throws ContainerExceptionInterface
      * @throws BindingResolutionException
      * @throws NotFoundExceptionInterface
@@ -48,18 +52,22 @@ final class TaskController extends Controller
     /**
      * Get a task by its ID.
      *
+     * @param int $projectId
+     * @param int $taskId
+     * @param int $id
+     * @return JsonResponse
      * @throws ContainerExceptionInterface
      * @throws NotFoundExceptionInterface
      * @throws BindingResolutionException
      * @throws \Exception
      */
-    public function getById(int $id): JsonResponse
+    public function getById(int $projectId, int $taskId, int $id): JsonResponse
     {
-        $user = Auth::user();
+        $user = Auth::user(); // You might want to use this for authorization checks
         $task = $this->taskService->findById($id);
 
         if (is_null($task)) {
-            throw new \Exception("Task Not Found or not assigned to the user.", 404);
+            return apiResponse()->error('Task not found or not assigned to the user.', 404);
         }
 
         return apiResponse()->success(new TaskTransformer($task));
@@ -68,6 +76,9 @@ final class TaskController extends Controller
     /**
      * Update an existing task.
      *
+     * @param TaskRequest $request
+     * @param int $id
+     * @return JsonResponse
      * @throws ContainerExceptionInterface
      * @throws NotFoundExceptionInterface
      * @throws BindingResolutionException
@@ -77,7 +88,7 @@ final class TaskController extends Controller
         $task = $this->taskService->findById($id);
 
         if (is_null($task)) {
-            throw new \Exception("Task Not Found.", 404);
+            return apiResponse()->error('Task not found.', 404);
         }
 
         $taskDTO = $request->getDTO();
@@ -88,28 +99,30 @@ final class TaskController extends Controller
     /**
      * Delete a task.
      *
+     * @param int $id
+     * @return JsonResponse
      * @throws ContainerExceptionInterface
      * @throws BindingResolutionException
      * @throws NotFoundExceptionInterface
      */
-
-
     public function destroy(int $id): JsonResponse
     {
         $task = $this->taskService->findById($id);
 
         if (is_null($task)) {
-            throw new \Exception("Task Not Found.", 404);
+            return apiResponse()->error('Task not found.', 404);
         }
 
         $this->taskService->delete($task);
-
-        return apiResponse()->success("Task has been deleted.");
+        return apiResponse()->success('Task has been deleted.');
     }
 
     /**
-     * Assign users to a task.
+     * Assign a user to a task.
      *
+     * @param int $taskId
+     * @param int $userId
+     * @return JsonResponse
      * @throws NotFoundExceptionInterface
      * @throws ContainerExceptionInterface
      * @throws BindingResolutionException
@@ -130,5 +143,4 @@ final class TaskController extends Controller
 
         return apiResponse()->error('Failed to assign user to task.');
     }
-
 }

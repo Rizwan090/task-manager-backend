@@ -22,7 +22,7 @@ final class CommentController extends Controller
      * @throws BindingResolutionException
      * @throws NotFoundExceptionInterface
      */
-    public function getAllByTaskId(int $taskId): JsonResponse
+    public function getAllByTaskId(int $projectId, int $taskId): JsonResponse
     {
         $comments = $this->commentService->getAllByTaskId($taskId);
         return apiResponse()->success(CommentTransformer::collection($comments));
@@ -41,16 +41,20 @@ final class CommentController extends Controller
     }
 
     /**
+     * Find a comment by its ID
+     *
      * @throws NotFoundExceptionInterface
      * @throws ContainerExceptionInterface
      * @throws BindingResolutionException
      */
-    public function findById(int $id): JsonResponse
+    public function findById(int $projectId, int $taskId, int $commentId): JsonResponse
     {
-        $comment = $this->commentService->findById($id);
+        $comment = $this->commentService->findById($commentId);
+
         if (is_null($comment)) {
             return apiResponse()->error('Comment not found.', 404);
         }
+
         return apiResponse()->success(new CommentTransformer($comment));
     }
 
@@ -59,10 +63,15 @@ final class CommentController extends Controller
      * @throws ContainerExceptionInterface
      * @throws BindingResolutionException
      */
-    public function update(CommentRequest $request, int $id): JsonResponse
+    public function update(CommentRequest $request, int $projectId, int $taskId, int $commentId): JsonResponse
     {
         $commentDTO = $request->getDTO();
-        $updatedComment = $this->commentService->update($id, $commentDTO);
+        $updatedComment = $this->commentService->update($commentId, $commentDTO);
+
+        if (is_null($updatedComment)) {
+            return apiResponse()->error('Comment not found or not updated.', 404);
+        }
+
         return apiResponse()->success(new CommentTransformer($updatedComment));
     }
 
@@ -71,13 +80,14 @@ final class CommentController extends Controller
      * @throws ContainerExceptionInterface
      * @throws BindingResolutionException
      */
-    public function delete(int $id): JsonResponse
+    public function delete(int $projectId, int $taskId, int $commentId): JsonResponse
     {
-        $comment = $this->commentService->findById($id);
+        $comment = $this->commentService->findById($commentId);
         if (is_null($comment)) {
             return apiResponse()->error('Comment not found.', 404);
         }
-        $this->commentService->delete($id);
+
+        $this->commentService->delete($commentId);
         return apiResponse()->success('Comment has been deleted.');
     }
 }

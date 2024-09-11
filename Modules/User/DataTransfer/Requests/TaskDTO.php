@@ -2,13 +2,15 @@
 
 namespace Modules\User\DataTransfer\Requests;
 
+use Modules\User\Enum\Status;
+
 class TaskDTO
 {
     private ?int $parentId;
     private int $projectId;
     private string $title;
     private ?string $description;
-    private bool $isActive;
+    private Status $status;
     private ?int $assigneeId;
 
     private function __construct(
@@ -16,22 +18,21 @@ class TaskDTO
         int $projectId,
         string $title,
         ?string $description,
-        bool $isActive,
+        Status $status,
         ?int $assigneeId
     ) {
         $this->parentId = $parentId;
         $this->projectId = $projectId;
         $this->title = $title;
         $this->description = $description;
-        $this->isActive = $isActive;
+        $this->status = $status;
         $this->assigneeId = $assigneeId;
     }
 
-    public static function create(?int $parentId, int $projectId, string $title, ?string $description, bool $isActive, ?int $assigneeId): self
+    public static function create(?int $parentId, int $projectId, string $title, ?string $description, Status $status, ?int $assigneeId): self
     {
-        return new self($parentId, $projectId, $title, $description, $isActive, $assigneeId);
+        return new self($parentId, $projectId, $title, $description, $status, $assigneeId);
     }
-
 
     public function getParentId(): ?int
     {
@@ -53,13 +54,30 @@ class TaskDTO
         return $this->description;
     }
 
-    public function isActive(): bool
+    public function getStatus(): Status
     {
-        return $this->isActive;
+        return $this->status;
+    }
+
+    public function getStatusValue(): string
+    {
+        return $this->status->value;
     }
 
     public function getAssigneeId(): ?int
     {
         return $this->assigneeId;
+    }
+
+    public function toArray(): array
+    {
+        return [
+            'parent_id' => $this->parentId,
+            'project_id' => $this->projectId,
+            'title' => $this->title,
+            'description' => $this->description,
+            'status' => $this->status->value,
+            'assignee_id' => $this->assigneeId,
+        ];
     }
 }

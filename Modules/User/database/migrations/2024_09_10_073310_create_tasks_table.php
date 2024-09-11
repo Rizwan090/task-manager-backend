@@ -17,15 +17,13 @@ return new class extends Migration
             $table->unsignedBigInteger('project_id');
             $table->string('title');
             $table->text('description')->nullable();
-            $table->boolean('is_active')->default(true);
+            $table->enum('status', ['todo', 'in_progress', 'testing', 'hold', 'completed'])->default('todo');
             $table->unsignedBigInteger('assignee_id')->nullable();
             $table->foreign('parent_id')->references('id')->on('tasks')->onDelete('cascade');
             $table->foreign('project_id')->references('id')->on('projects')->onDelete('cascade');
             $table->foreign('assignee_id')->references('id')->on('users')->onDelete('set null');
             $table->timestamps();
-
         });
-
     }
 
     /**

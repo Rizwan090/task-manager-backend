@@ -6,6 +6,7 @@ use Modules\User\Contracts\Services\TaskContract;
 use Modules\User\Contracts\Repositories\TaskRepositoryContract;
 use Modules\User\DataTransfer\Requests\TaskDTO;
 use Modules\User\Entities\Task;
+use Modules\User\Enum\Status;
 use Illuminate\Support\Collection;
 
 class TaskService implements TaskContract
@@ -27,7 +28,7 @@ class TaskService implements TaskContract
             'project_id' => $taskDTO->getProjectId(),
             'title' => $taskDTO->getTitle(),
             'description' => $taskDTO->getDescription(),
-            'is_active' => $taskDTO->isActive(),
+            'status' => $taskDTO->getStatusValue(),
             'assignee_id' => $taskDTO->getAssigneeId(),
         ];
 
@@ -69,13 +70,12 @@ class TaskService implements TaskContract
             'project_id' => $taskDTO->getProjectId(),
             'title' => $taskDTO->getTitle(),
             'description' => $taskDTO->getDescription(),
-            'is_active' => $taskDTO->isActive(),
+            'status' => $taskDTO->getStatusValue(), // Ensure to use status value
             'assignee_id' => $taskDTO->getAssigneeId(),
         ];
 
         return $this->taskRepository->update($task, $data);
     }
-
 
     /**
      * Find tasks by project ID.
@@ -93,9 +93,19 @@ class TaskService implements TaskContract
         return $this->taskRepository->assignUserToTask($task, $userId);
     }
 
-
-    public function getAllByProjectId(int $projectId)
+    /**
+     * Get all tasks by project ID.
+     */
+    public function getAllByProjectId(int $projectId): Collection
     {
         return $this->taskRepository->getAllByProjectId($projectId);
+    }
+
+    /**
+     * Get all tasks by status.
+     */
+    public function getByStatus(Status $status): Collection
+    {
+        return $this->taskRepository->getByStatus($status);
     }
 }
