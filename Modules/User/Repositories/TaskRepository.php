@@ -36,10 +36,14 @@ class TaskRepository implements TaskRepositoryContract
     /**
      * Delete a task.
      */
-    public function delete(Task $task): bool
+    public function delete(Task $task): ?bool
     {
         return $task->delete();
     }
+
+
+
+
 
     /**
      * Update an existing task.

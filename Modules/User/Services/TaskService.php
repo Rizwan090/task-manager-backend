@@ -54,11 +54,13 @@ class TaskService implements TaskContract
     /**
      * Delete a task.
      */
-    public function delete(Task $task): ?Task
+    public function delete(Task $task): ?bool
     {
-        $deleted = $this->taskRepository->delete($task);
-        return $deleted ? $task : null;
+        return $this->taskRepository->delete($task);
     }
+
+
+
 
     /**
      * Update an existing task.
@@ -70,7 +72,7 @@ class TaskService implements TaskContract
             'project_id' => $taskDTO->getProjectId(),
             'title' => $taskDTO->getTitle(),
             'description' => $taskDTO->getDescription(),
-            'status' => $taskDTO->getStatusValue(), // Ensure to use status value
+            'status' => $taskDTO->getStatusValue(),
             'assignee_id' => $taskDTO->getAssigneeId(),
         ];
 

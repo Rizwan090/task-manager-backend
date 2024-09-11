@@ -45,9 +45,9 @@ interface TaskContract
      * Delete a task.
      *
      * @param Task $task
-     * @return Task|null
+     * @return bool|null
      */
-    public function delete(Task $task): ?Task;
+    public function delete(Task $task): ?bool;
 
     /**
      * Assign a user to a task.
